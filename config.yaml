@@ -1,0 +1,21 @@
+# This file should contain everything to configure the workflow on a global scale.
+
+# Sample-based data, one row per sample, read by pandas in rules/common.smk
+samples: samples.tsv
+
+toy:
+
+  # A list of trimmers, see http://www.usadellab.org/cms/?page=trimmomatic
+  trimmers: ["TRAILING:3"]
+
+  # optional parameters for the trimmer
+  extra: 'LEADING:5 TRAILING:5 MINLEN:80 SLIDINGWINDOW:"4:25"'
+
+  # optional compression levels from -0 to -9 and -11
+  compression-level: "-9"
+
+plot:
+
+  bar_color: white
+  flier_color: grey
+  plot_color: darkgrid
