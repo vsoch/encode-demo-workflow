@@ -134,11 +134,22 @@ Configure the workflow according to your needs via editing the file `config.yaml
 
 Test your configuration by performing a dry-run via
 
-    snakemake --use-conda -n
+```bash
+$ snakemake --use-conda -n
+```
 
-Execute the workflow locally via
+If you are going to run it **locally** then you'll need depdencies installed! Install
+with:
 
-    snakemake --use-conda --cores $N
+```bash
+$ pip install -r requirements.txt
+```
+
+Then execute the workflow locally via
+
+```bash
+$ snakemake --use-conda --cores $N
+```
 
 using `$N` cores or run it in a cluster environment via
 

@@ -137,10 +137,11 @@ def parse_file_name(filepath):
     )
 
 
-def save_plot(figure, untrimmed_name, trimmed_name):
+def save_plot(figure, untrimmed_name, trimmed_name, output_dir):
     logging.debug('Saving plot')
     figure.savefig(
-        '{}_untrimmed_{}_trimmed_quality_scores.png'.format(
+        '{}/{}_untrimmed_{}_trimmed_quality_scores.png'.format(
+            output_dir,
             untrimmed_name,
             trimmed_name,
         ),
@@ -186,6 +187,11 @@ def get_args():
         help='Color for plot background.',
         default='darkgrid'
     )
+    parser.add_argument(
+        '-o', '--output-dir',
+        help='Folder for output',
+        default='./'
+    )
     return parser.parse_args()
 
 
@@ -203,7 +209,7 @@ def main():
         untrimmed_count,
         trimmed_count,
     )
-    save_plot(figure, parse_file_name(args.untrimmed), parse_file_name(args.trimmed))
+    save_plot(figure, parse_file_name(args.untrimmed), parse_file_name(args.trimmed), args.output_dir)
 
 
 if __name__ == '__main__':

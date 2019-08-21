@@ -2,6 +2,7 @@
 
 # Sample-based data, one row per sample, read by pandas in rules/common.smk
 samples: samples.tsv
+singularity: docker://quay.io/encode-dcc/demo-pipeline:template
 
 toy:
 
@@ -9,7 +10,7 @@ toy:
   trimmers: ["TRAILING:3"]
 
   # optional parameters for the trimmer
-  extra: 'LEADING:5 TRAILING:5 MINLEN:80 SLIDINGWINDOW:"4:25"'
+  extra: ''
 
   # optional compression levels from -0 to -9 and -11
   compression_level: "-9"

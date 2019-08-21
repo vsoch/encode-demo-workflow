@@ -2,7 +2,8 @@
 
 rule plot:
     input:
-        expand("data/trimmed/{sample}.fastq.gz", sample=samples.index) # 1,2
+        untrimmed="data/reads/file{sample}.fastq.gz",
+        trimmed="data/trimmed/trimmed.file{sample}.fastq.gz"
     output:
         "data/file{sample}_untrimmed_file{sample}_trimmed_quality_scores.png"
     params:
@@ -12,4 +13,4 @@ rule plot:
     log:
         "logs/plot/{sample}.log"
     shell:
-        'python3 scripts/plot_fastq_scores.py --untrimmed {input} --trimmed {output} --bar-color {params.bar_color} --flier-color {params.flier_color} --plot-color {params.plot_color}'
+        'python3 scripts/plot_fastq_scores.py --untrimmed "{input.untrimmed}" --trimmed "{input.trimmed}" --bar-color {params.bar_color} --flier-color {params.flier_color} --plot-color {params.plot_color} --output-dir data/'
