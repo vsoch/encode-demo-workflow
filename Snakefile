@@ -16,3 +16,4 @@ rule all:
         expand(["data/report/file{group}_untrimmed_file{group}_trimmed_quality_scores.png"])
 
 include: "rules/trimming.smk"
+include: "rules/plot.smk"

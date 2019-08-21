@@ -32,6 +32,19 @@ The pipeline demonstrates using the [Trimmomatic](http://www.usadellab.org/cms/?
 
 How does it work?
 
+### Snakefile
+
+The main [Snakemake](Snakemake) file is like the entrypoint to your workflow. At the top
+there are (akin to a Makefile) there is a "make all" section that will list (or expand
+patterns) to generate the files that should be produced after running the workflow.
+
+### Rules
+
+Rules are other tasks in the workflow that are organized in the [rules](rules)
+folder. Each is included in the Snakefile to add to be run. The logic of running
+things comes down to looking at the inputs and outputs for rules, and running
+them accordingly to generate the final expected outputs.
+
 ### Samples.csv
 
 While we *could* write input data as variables in [config.yaml](config.yaml), when the number of
@@ -60,6 +73,14 @@ samples = pandas.read_csv("samples.tsv", sep="\t").set_index("sample", drop=Fals
 ```
 
 Notice that we set the index to "sample" to correspond with the column with 1 and 2.
+We could then feed this index (including both 1 and 2) into a variable to populate an input:
+
+```python
+sample=samples.index
+```
+
+For this example, we don't actually use the second column (condition) but it's provided as an
+example (we could!).
 
 ### Validation
 
@@ -161,22 +182,3 @@ The following recipe provides established best practices for running and extendi
 ## Testing
 
 Tests cases are in the subfolder `.test`. They are automtically executed via continuous integration with Travis CI.
-
-## Not in Use
-
-The following sections I originally started implementing here, but I think they are overkill for
-what we want to do (so I didn't implement).
-
-### Samples.csv
-
-While we *could* write input data as variables in [config.yaml](config.yaml), when the number of
-inputs gets very large this becomes problematic. Instead, we can use a [samples.tsv](samples.tsv)
-file that records our input data. And then we can read in (in our first rule) like so:
-
-```python
-import pandas as pd
-samples = pd.read_table("samples.tsv").set_index("samples", drop=False)
-```
-
-I didn't implement this off the bat because it's not obvious how the samples that
-are read in can then further populate
