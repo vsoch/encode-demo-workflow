@@ -43,7 +43,7 @@ patterns) to generate the files that should be produced after running the workfl
 Rules are other tasks in the workflow that are organized in the [rules](rules)
 folder. Each is included in the Snakefile to add to be run. The logic of running
 things comes down to looking at the inputs and outputs for rules, and running
-them accordingly to generate the final expected outputs.
+them accordingly to generate the final expected outputs. 
 
 ### Samples.csv
 

@@ -12,7 +12,7 @@ toy:
   extra: 'LEADING:5 TRAILING:5 MINLEN:80 SLIDINGWINDOW:"4:25"'
 
   # optional compression levels from -0 to -9 and -11
-  compression-level: "-9"
+  compression_level: "-9"
 
 plot:
 
