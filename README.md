@@ -205,9 +205,18 @@ See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/exe
 
 **Note: the report template has not been designed yet**
 
-After successful execution, you can create a self-contained interactive HTML report with all results via:
+I consider it a bug that the report generation cannot be done [using the container](https://github.com/vsoch/encode-demo-workflow/issues/4)
+so for now this isn't designed. But typically, after successful execution, you can create a self-contained interactive HTML report with all results via:
 
-    snakemake --report report.html
+```bash
+$ snakemake --report report.html
+```
+
+The command we would want to work is:
+
+```bash
+$ snakemake --with-singularity --report report.html
+```
 
 This report can, e.g., be forwarded to your collaborators.
 
