@@ -1,5 +1,6 @@
 # Trimming rules imported into the main Snakefile
 # see https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic/se.html
+# If you use the Singularity container, Trimmomatric is set to version 0.38
 
 rule trimmomatic:
     input:

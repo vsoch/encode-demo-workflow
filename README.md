@@ -138,41 +138,95 @@ Test your configuration by performing a dry-run via
 $ snakemake --use-conda -n
 ```
 
-If you are going to run it **locally** then you'll need depdencies installed! Install
-with:
+##### Locally
 
-```bash
-$ pip install -r requirements.txt
-```
-
-Then execute the workflow locally via
+Execute the workflow locally via
 
 ```bash
 $ snakemake --use-conda --cores $N
 ```
 
+*below not tested yet*
+
 using `$N` cores or run it in a cluster environment via
 
-    snakemake --use-conda --cluster qsub --jobs 100
-
+```bash
+$ snakemake --use-conda --cluster qsub --jobs 100
+```
 or
 
-    snakemake --use-conda --drmaa --jobs 100
+```bash
+$ snakemake --use-conda --drmaa --jobs 100
+```
 
-If you not only want to fix the software stack but also the underlying OS, use
+##### Containers
 
-    snakemake --use-conda --use-singularity
+If you want to use a provided container (that includes dependencies and an operating system) - there is 
+a [Dockerfile](docker/Dockerfile) that can be used as a base for Singularity and Docker. The difference
+from the main Encode container is that we don't install Python 2, and we create an alias for trimmomatic
+so that the Snakemake wrapper will work. If you need to build the Docker container (and this should
+be provided for the user in Docker Hub):
+
+```bash
+$ docker build -f docker/Dockerfile -t vanessa/encode-demo-workflow .
+```
+
+If we ask for Singularity, Snakemake will first pull the Docker container specified above
+as a Singularity image.
+
+```bash
+$ snakemake --use-singularity
+Building DAG of jobs...
+Pulling singularity image docker://vanessa/encode-demo-workflow.
+```
+
+The expectation is that the container includes all dependencies for the workflow,
+including a `trimmomatic` binary. For this particular container, we create an
+executable that forwards the command to the .jar (Java) file. As an alternative,
+you can select to entirely use conda, within the Singularity container. Let's first
+delete the previous output:
+
+```bash
+$ snakemake --delete-all-output
+```
+
+And then run again!
+
+```bash
+$ snakemake --use-conda --use-singularity
+```
+
+**todo, next test with slurm, reports, etc.**
 
 in combination with any of the modes above.
 See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
 
-# Step 4: Investigate results
+#### Step 4: Investigate results
+
+**Note: the report template has not been designed yet**
 
 After successful execution, you can create a self-contained interactive HTML report with all results via:
 
     snakemake --report report.html
 
 This report can, e.g., be forwarded to your collaborators.
+
+# Step 5: Clean Up
+
+If you want to clean up output (to try a different backend, or otherwise just remove
+the files) you can do:
+
+```bash
+$ snakemake --delete-temp-output
+$ snakemake --delete-all-output
+Building DAG of jobs...
+Deleting data/trimmed/trimmed.file1.fastq.gz
+Deleting data/trimmed/trimmed.file2.fastq.gz
+Deleting data/file1_untrimmed_file1_trimmed_quality_scores.png
+Deleting data/file2_untrimmed_file2_trimmed_quality_scores.png
+```
+
+And then have a clean slate to start again.
 
 ### Advanced
 

@@ -7,7 +7,8 @@ configfile: "config.yaml"
 report: "report/workflow.rst"
 
 # Allow users to fix the underlying OS via singularity.
-singularity: "docker://continuumio/miniconda3"
+singularity: "docker://vanessa/encode-demo-workflow:latest"
+docker: "vanessa/encode-demo-workflow:latest"
 
 rule all:
     input:
