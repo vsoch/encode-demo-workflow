@@ -20,7 +20,7 @@ jobs:
         DOCKER_TAG=$(echo "${GITHUB_SHA}" | cut -c1-12)
         docker tag quay.io/vanessa/encode-demo-workflow:latest quay.io/vanessa/encode-demo-workflow:${DOCKER_TAG}
     - name: Deploy the Docker Image
-      env: # Or as an environment variable
+      env:
         DEPLOY_LOGIN: ${{ secrets.DEPLOY_LOGIN }}
         DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
       run: |
