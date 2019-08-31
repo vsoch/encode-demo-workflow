@@ -4,6 +4,7 @@ FROM continuumio/miniconda3
 
 # Update the repository sources list
 # Install base packages: git, python2/3, java
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     libncurses5-dev \
     libncursesw5-dev \
