@@ -144,7 +144,7 @@ as it's most likely you will want to run this using HPC.
 You can pull the container:
 
 ```bash
-$ singularity pull docker://vanessa/encode-demo-workflow
+$ singularity pull docker://quay.io/vanessa/encode-demo-workflow
 ```
 
 And first test the default configuration by performing a dry-run via
@@ -183,31 +183,31 @@ To execute the same workflow using Docker, we have more isolation from the host.
 We can run the default provided in the container:
 
 ```bash
-$ docker run vanessa/encode-demo-workflow -n
+$ docker run quay.io/vanessa/encode-demo-workflow -n
 ```
 
 To run the workflow (entirely in the container):
 
 ```bash
-$ docker run vanessa/encode-demo-workflow
+$ docker run quay.io/vanessa/encode-demo-workflow
 ```
 
 To bind output to the host:
 
 ```bash
-$ docker run -v $PWD/data/trimmed:/code/data/trimmed vanessa/encode-demo-workflow
+$ docker run -v $PWD/data/trimmed:/code/data/trimmed quay.io/vanessa/encode-demo-workflow
 ```
 
 or bind the entire present working directory to be used in the container:
 
 ```bash
-$ docker run -v $PWD:/code vanessa/encode-demo-workflow
+$ docker run -v $PWD:/code quay.io/vanessa/encode-demo-workflow
 ``` 
 
 and for a report:
 
 ```bash
-$ docker run -v $PWD:/code vanessa/encode-demo-workflow --report /code/index.html
+$ docker run -v $PWD:/code quay.io/vanessa/encode-demo-workflow --report /code/index.html
 ``` 
 
 The report generated will use the root of the repository as the web root so you
@@ -222,7 +222,7 @@ so that the Snakemake wrapper will work. If you need to build the Docker contain
 be provided for the user in Docker Hub):
 
 ```bash
-$ docker build -f docker/Dockerfile -t vanessa/encode-demo-workflow .
+$ docker build -f docker/Dockerfile -t quay.io/vanessa/encode-demo-workflow .
 ```
 
 And then we pull to the host via Singularity, or Docker. 
