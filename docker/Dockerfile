@@ -5,7 +5,8 @@ FROM continuumio/miniconda3
 # Update the repository sources list
 # Install base packages: git, python2/3, java
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
+RUN mkdir -p /usr/share/man/man1mkdir -p /usr/share/man/man1 && \
+    apt-get update && apt-get install -y \
     libncurses5-dev \
     libncursesw5-dev \
     libcurl4-openssl-dev \
@@ -34,6 +35,7 @@ RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmoma
     conda install pygraphviz && \
     conda install seaborn>=0.8.1 && \
     conda install -c bioconda -c conda-forge snakemake && \
+    conda clean -afy && \
     mkdir -p /code
 
 WORKDIR /code
