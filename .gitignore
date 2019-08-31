@@ -1,4 +1,6 @@
-*
+.snakemake
+logs
+*.sif
 !scripts
 !scripts/*
 !scripts/common

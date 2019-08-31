@@ -24,6 +24,9 @@ This is a Snakemake workflow to implement the previous [encode-demo-pipeline](ht
 
 The pipeline demonstrates using the [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) software to trim input FASTQs. The output includes the trimmed FASTQ and a plot of FASTQ quality scores before and after trimming. For simplicity this demo supports only single-end FASTQs, however since we use the [trimmomatric snakemake-wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html) it would be fairly easy to adjust for paired.
 
+**Importantly** this pipeline is not intended to run on your host. For complete reproducibility, we 
+use containers. While some think that using conda is enough for reproducibility, I do not.
+
 ## Authors
 
 * Vanessa Sochat (@vsoch)
@@ -117,26 +120,108 @@ that you want to make easy for other researchers to use.
 
 ## Usage
 
-### Simple
+### Step 1: Download the Repository
 
-#### Step 1: Install workflow
-
-If you simply want to use this workflow, download and extract the [latest release](https://github.com/snakemake-workflows/encode-demo-workflow/releases).
-If you intend to modify and further extend this workflow or want to work under version control, fork this repository as outlined in [Advanced](#advanced). The latter way is recommended.
-
-In any case, if you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this repository and, if available, its DOI (see above).
-
-#### Step 2: Configure workflow
-
-Configure the workflow according to your needs via editing the file `config.yaml`.
-
-#### Step 3: Execute workflow
-
-Test your configuration by performing a dry-run via
+If you simply want to use this workflow, first clone the repository:
 
 ```bash
-$ snakemake --use-conda -n
+$ git clone https://www.github.com/vsoch/encode-demo-workflow
 ```
+
+### Step 2: Configure workflow
+
+If you want to change configuration options, edit the `config.yaml`.
+Otherwise, we will demo usage using the default already built into the
+container.
+
+### Step 3: Execute workflow
+
+#### Singularity 
+
+For this example, we will use [Singularity](https://sylabs.io/guides/latest/user-guide/)
+as it's most likely you will want to run this using HPC.
+
+You can pull the container:
+
+```bash
+$ singularity pull docker://vanessa/encode-demo-workflow
+```
+
+And first test the default configuration by performing a dry-run via
+
+```bash
+$ singularity run encode-demo-workflow_latest.sif -n
+```
+
+And then run the workflow:
+
+```bash
+$ singularity run encode-demo-workflow_latest.sif
+```
+
+The output files will be in data/trimmed/, assuming that you run the workflow
+from the repository with the local files bound. You can also generate a report!
+In the example below, we build into the docs folder to render it on GitHub Pages:
+
+```bash
+$ singularity run encode-demo-workflow_latest.sif --report docs/index.html
+```
+
+And then clean up:
+
+```bash
+$ singularity run encode-demo-workflow_latest.sif --delete-all-output
+```
+
+If you want to run this with a job manager, just put the entire command in
+a single script. The native --cluster commands doin't work with this approach.
+
+#### Docker
+
+To execute the same workflow using Docker, we have more isolation from the host.
+We can run the default provided in the container:
+
+```bash
+$ docker run vanessa/encode-demo-workflow -n
+```
+
+To run the workflow (entirely in the container):
+
+```bash
+$ docker run vanessa/encode-demo-workflow
+```
+
+To bind output to the host:
+
+```bash
+$ docker run -v $PWD/data/trimmed:/code/data/trimmed vanessa/encode-demo-workflow
+```
+or generate a report:
+
+```bash
+$ docker run -v $PWD/data/report:/code/data/report vanessa/encode-demo-workflow --report /code/data/report/report.html
+```
+
+## Development
+
+If you want to build a container that is used in the example above, there is 
+a [Dockerfile](docker/Dockerfile) that is used as a base for Singularity and Docker. The difference
+from the main Encode container is that we don't install Python 2, and we create an alias for trimmomatic
+so that the Snakemake wrapper will work. If you need to build the Docker container (and this should
+be provided for the user in Docker Hub):
+
+```bash
+$ docker build -f docker/Dockerfile -t vanessa/encode-demo-workflow .
+```
+
+And then we pull to the host via Singularity, or Docker. 
+
+The expectation is that the container includes all dependencies for the workflow,
+including a `trimmomatic` binary. For this particular container, we create an
+executable that forwards the command to the .jar (Java) file.
+
+
+See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
 
 ##### Locally
 
@@ -150,54 +235,6 @@ $ snakemake --use-conda --cores $N
 
 using `$N` cores or run it in a cluster environment via
 
-```bash
-$ snakemake --use-conda --cluster qsub --jobs 100
-```
-or
-
-```bash
-$ snakemake --use-conda --drmaa --jobs 100
-```
-
-##### Containers
-
-If you want to use a provided container (that includes dependencies and an operating system) - there is 
-a [Dockerfile](docker/Dockerfile) that can be used as a base for Singularity and Docker. The difference
-from the main Encode container is that we don't install Python 2, and we create an alias for trimmomatic
-so that the Snakemake wrapper will work. If you need to build the Docker container (and this should
-be provided for the user in Docker Hub):
-
-```bash
-$ docker build -f docker/Dockerfile -t vanessa/encode-demo-workflow .
-```
-
-If we ask for Singularity, Snakemake will first pull the Docker container specified above
-as a Singularity image.
-
-```bash
-$ snakemake --use-singularity
-Building DAG of jobs...
-Pulling singularity image docker://vanessa/encode-demo-workflow.
-```
-
-The expectation is that the container includes all dependencies for the workflow,
-including a `trimmomatic` binary. For this particular container, we create an
-executable that forwards the command to the .jar (Java) file. As an alternative,
-you can select to entirely use conda, within the Singularity container. Let's first
-delete the previous output:
-
-```bash
-$ snakemake --delete-all-output
-```
-
-And then run again!
-
-```bash
-$ snakemake --use-conda --use-singularity
-```
-
-in combination with any of the modes above.
-See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
 
 #### Step 4: Investigate results
 

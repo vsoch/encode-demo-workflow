@@ -6,9 +6,10 @@ include: "rules/common.smk"
 configfile: "config.yaml"
 report: "report/workflow.rst"
 
+# Since we run the entire workflow in a container, we don't use additional ones.
 # Allow users to fix the underlying OS via singularity.
-singularity: "docker://vanessa/encode-demo-workflow:latest"
-docker: "vanessa/encode-demo-workflow:latest"
+# singularity: "docker://vanessa/encode-demo-workflow:latest"
+# docker: "vanessa/encode-demo-workflow:latest"
 
 rule all:
     input:
