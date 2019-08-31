@@ -196,14 +196,10 @@ And then run again!
 $ snakemake --use-conda --use-singularity
 ```
 
-**todo, next test with slurm, reports, etc.**
-
 in combination with any of the modes above.
 See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
 
 #### Step 4: Investigate results
-
-**Note: the report template has not been designed yet**
 
 I consider it a bug that the report generation cannot be done [using the container](https://github.com/vsoch/encode-demo-workflow/issues/4)
 so for now this isn't designed. But typically, after successful execution, you can create a self-contained interactive HTML report with all results via:
@@ -215,7 +211,7 @@ $ snakemake --report report.html
 The command we would want to work is:
 
 ```bash
-$ snakemake --with-singularity --report report.html
+$ snakemake --use-singularity --report report.html
 ```
 
 This report can, e.g., be forwarded to your collaborators.
@@ -255,4 +251,4 @@ The following recipe provides established best practices for running and extendi
 
 ## Testing
 
-Tests cases are in the subfolder `.test`. They are automtically executed via continuous integration with Travis CI.
+Tests cases are in the subfolder `.test`. They are automatically executed via continuous integration with Travis CI.
