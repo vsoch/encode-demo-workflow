@@ -342,7 +342,7 @@ table.dataTable tbody>tr.selected,table.dataTable tbody>tr>.selected{background-
     <nav class="navbar fixed-top navbar-dark bg-dark flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Snakemake Report</a>
       <ul class="nav navbar-nav navbar-right" style="padding-right: 10px;">
-        <li class="text-white">Sat Aug 31 17:11:28 2019 UTC</li>
+        <li class="text-white">Sat Aug 31 17:30:23 2019 UTC</li>
         <li><a class="text-white" href="https://snakemake.readthedocs.io">Snakemake 5.5.4</a></li>
       </ul>
       <!--<input id="searchbar" class="invisible form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
@@ -394,7 +394,25 @@ table.dataTable tbody>tr.selected,table.dataTable tbody>tr>.selected{background-
             <h2>Workflow</h2>
           </div>
 
-          <p>This is report generated from a Snakemake workflow. See [here](<a class="reference external" href="https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html">https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html</a>) for details.</p>
+          <p>This pipeline demonstrates using the <a class="reference external" href="http://www.usadellab.org/cms/?page=trimmomatic">Trimmomatic</a> software to trim input FASTQs. The output includes the trimmed FASTQ and a plot of FASTQ quality scores before and after trimming. For simplicity this demo supports only single-end FASTQs, however since we use the <a class="reference external" href="https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html">trimmomatic snakemake-wrapper</a> it would be fairly easy to adjust for paired.</p>
+<p>Configuration options include:</p>
+<blockquote>
+<ul class="simple">
+<li>Samples: samples.tsv</li>
+<li>Trimmers: TRAILING:3</li>
+<li>Extra Arguments:</li>
+<li>Compression Level: -9</li>
+</ul>
+</blockquote>
+<p>Plotting options include:</p>
+<blockquote>
+<ul class="simple">
+<li>Bar Color: white</li>
+<li>Flier Color: grey</li>
+<li>Plot Color: darkgrid</li>
+</ul>
+</blockquote>
+<p>This is report generated from a Snakemake workflow. See <a class="reference external" href="https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html">here</a> for details.</p>
 <!-- _ -->
 
 
@@ -508,6 +526,209 @@ table.dataTable tbody>tr.selected,table.dataTable tbody>tr>.selected{background-
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>trimmomatic</td>
+                <td>2</td>
+                <td>
+                  <a data-toggle="collapse" role="button" href="#output-9826e026-21ba-4f42-a15f-b9733dad8159" aria-expanded="false" aria-controls="collapse-output"><span data-feather="plus-circle"></span></a>
+                  <div class="collapse" id="output-9826e026-21ba-4f42-a15f-b9733dad8159">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">data/trimmed/trimmed.file1.fastq.gz</li>
+                      <li class="list-group-item">data/trimmed/trimmed.file2.fastq.gz</li>
+                    </ul>
+                  </div>
+                </td>
+                <td></td>
+                <td>
+                    <a data-toggle="collapse" role="button" href="#conda-env-9826e026-21ba-4f42-a15f-b9733dad8159" aria-expanded="false" aria-controls="collapse-env"><span data-feather="plus-circle"></span></a>
+                    <div class="collapse" id="conda-env-9826e026-21ba-4f42-a15f-b9733dad8159">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">trimmomatic ==0.36</li>
+                        <li class="list-group-item">pigz ==2.3.4</li>
+                      </ul>
+                    </div>
+                </td>
+                <td>
+                    <a data-toggle="collapse" role="button" href="#code-9826e026-21ba-4f42-a15f-b9733dad8159" aria-expanded="false" aria-controls="collapse-env"><span data-feather="plus-circle"></span></a>
+                    <div class="collapse" id="code-9826e026-21ba-4f42-a15f-b9733dad8159">
+                      <table class="sourcetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre></div></td><td class="code"><div class="source"><pre><span></span><code><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">bio/trimmomatic/se</span>
+
+<span class="sd">Snakemake wrapper to trim reads with trimmomatic in SE mode with help of pigz.</span>
+<span class="sd">pigz is the parallel implementation of gz. Trimmomatic spends most of the time</span>
+<span class="sd">compressing and decompressing instead of trimming sequences. By using process</span>
+<span class="sd">substitution (&lt;(command), &gt;(command)), we can accelerate trimmomatic a lot.</span>
+<span class="sd">Consider providing this wrapper with at least 1 extra thread per each gzipped</span>
+<span class="sd">input or output file.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Johannes Köster, Jorge Langa&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016, Johannes Köster&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;koester@jimmy.harvard.edu&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">snakemake.shell</span> <span class="kn">import</span> <span class="n">shell</span>
+
+
+<span class="c1"># Distribute available threads between trimmomatic itself and any potential pigz instances</span>
+<span class="k">def</span> <span class="nf">distribute_threads</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">available_threads</span><span class="p">):</span>
+    <span class="n">gzipped_input_files</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">gzipped_output_files</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">output_file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">potential_threads_per_process</span> <span class="o">=</span> <span class="n">available_threads</span> <span class="o">//</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">gzipped_input_files</span> <span class="o">+</span> <span class="n">gzipped_output_files</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">potential_threads_per_process</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># decompressing pigz creates at most 4 threads</span>
+        <span class="n">pigz_input_threads</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">potential_threads_per_process</span><span class="p">)</span> <span class="k">if</span> <span class="n">gzipped_input_files</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">pigz_output_threads</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="n">available_threads</span> <span class="o">-</span> <span class="n">pigz_input_threads</span> <span class="o">*</span> <span class="n">gzipped_input_files</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">gzipped_output_files</span><span class="p">)</span> \
+                <span class="k">if</span> <span class="n">gzipped_output_files</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">trimmomatic_threads</span> <span class="o">=</span> <span class="n">available_threads</span> <span class="o">-</span> <span class="n">pigz_input_threads</span> <span class="o">*</span> <span class="n">gzipped_input_files</span> <span class="o">-</span> \
+                              <span class="n">pigz_output_threads</span> <span class="o">*</span> <span class="n">gzipped_output_files</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># not enough threads for pigz</span>
+        <span class="n">pigz_input_threads</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pigz_output_threads</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">trimmomatic_threads</span> <span class="o">=</span> <span class="n">available_threads</span>
+    <span class="k">return</span> <span class="n">trimmomatic_threads</span><span class="p">,</span> <span class="n">pigz_input_threads</span><span class="p">,</span> <span class="n">pigz_output_threads</span>
+
+
+<span class="k">def</span> <span class="nf">compose_input_gz</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">threads</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;(pigz -p {threads} --decompress --stdout {filename})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">filename</span>
+
+
+<span class="k">def</span> <span class="nf">compose_output_gz</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="n">compression_level</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">threads</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&gt;(pigz -p {threads} {compression_level} &gt; {filename})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">,</span>
+            <span class="n">compression_level</span><span class="o">=</span><span class="n">compression_level</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">filename</span>
+
+
+<span class="n">extra</span> <span class="o">=</span> <span class="n">snakemake</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extra&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">snakemake</span><span class="o">.</span><span class="n">log_fmt_shell</span><span class="p">(</span><span class="n">stdout</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">compression_level</span> <span class="o">=</span> <span class="n">snakemake</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;compression_level&quot;</span><span class="p">,</span> <span class="s2">&quot;-5&quot;</span><span class="p">)</span>
+<span class="n">trimmer</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">snakemake</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">trimmer</span><span class="p">)</span>
+
+<span class="c1"># Distribute threads</span>
+<span class="n">trimmomatic_threads</span><span class="p">,</span> <span class="n">input_threads</span><span class="p">,</span> <span class="n">output_threads</span> <span class="o">=</span> <span class="n">distribute_threads</span><span class="p">(</span>
+    <span class="n">snakemake</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">snakemake</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">snakemake</span><span class="o">.</span><span class="n">threads</span>
+<span class="p">)</span>
+
+<span class="c1"># Collect files</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">compose_input_gz</span><span class="p">(</span><span class="n">snakemake</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">input_threads</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">compose_output_gz</span><span class="p">(</span><span class="n">snakemake</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_threads</span><span class="p">,</span> <span class="n">compression_level</span><span class="p">)</span>
+
+<span class="n">shell</span><span class="p">(</span><span class="s2">&quot;trimmomatic SE -threads {trimmomatic_threads} {extra} {input} {output} {trimmer} {log}&quot;</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+                    </div>
+                </td>
+              </tr>
+              <tr>
+                <td>plot</td>
+                <td>2</td>
+                <td>
+                  <a data-toggle="collapse" role="button" href="#output-03b85bf3-f9e5-42ee-b013-dafda4fefe20" aria-expanded="false" aria-controls="collapse-output"><span data-feather="plus-circle"></span></a>
+                  <div class="collapse" id="output-03b85bf3-f9e5-42ee-b013-dafda4fefe20">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">data/file1_untrimmed_file1_trimmed_quality_scores.png</li>
+                      <li class="list-group-item">data/file2_untrimmed_file2_trimmed_quality_scores.png</li>
+                    </ul>
+                  </div>
+                </td>
+                <td></td>
+                <td>
+                </td>
+                <td>
+                    <a data-toggle="collapse" role="button" href="#code-03b85bf3-f9e5-42ee-b013-dafda4fefe20" aria-expanded="false" aria-controls="collapse-env"><span data-feather="plus-circle"></span></a>
+                    <div class="collapse" id="code-03b85bf3-f9e5-42ee-b013-dafda4fefe20">
+                      <table class="sourcetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="source"><pre><span></span><code>python3 scripts/plot_fastq_scores.py --untrimmed <span class="s2">&quot;{input.untrimmed}&quot;</span> --trimmed <span class="s2">&quot;{input.trimmed}&quot;</span> --bar-color <span class="o">{</span>params.bar_color<span class="o">}</span> --flier-color <span class="o">{</span>params.flier_color<span class="o">}</span> --plot-color <span class="o">{</span>params.plot_color<span class="o">}</span> --output-dir data/
+</code></pre></div>
+</td></tr></table>
+                    </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </main>
@@ -1149,7 +1370,7 @@ action:function(){this[this.select.items()+"s"]().select()}},selectNone:{text:t(
       var runtimes_spec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
         "description": "Shows the relationship between horsepower and the numbver of cylinders using tick marks.",
-        "data": {"values": []},
+        "data": {"values": [{'rule': 'plot', 'runtime': 14.308984279632568}, {'rule': 'plot', 'runtime': 14.533035278320312}, {'rule': 'trimmomatic', 'runtime': 1.148083209991455}, {'rule': 'trimmomatic', 'runtime': 1.6241183280944824}]},
         "mark": "point",
         "encoding": {
           "x": {"field": "runtime", "type": "quantitative",
@@ -1166,7 +1387,7 @@ action:function(){this[this.select.items()+"s"]().select()}},selectNone:{text:t(
         "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
         "description": "Timeline of jobs.",
         "data": {
-          "values": []
+          "values": [{'rule': 'plot', 'starttime': '2019-08-31T16:31:22.558700', 'endtime': '2019-08-31T16:31:36.867685'}, {'rule': 'plot', 'starttime': '2019-08-31T16:31:08.021665', 'endtime': '2019-08-31T16:31:22.554700'}, {'rule': 'trimmomatic', 'starttime': '2019-08-31T16:31:06.869581', 'endtime': '2019-08-31T16:31:08.017664'}, {'rule': 'trimmomatic', 'starttime': '2019-08-31T16:31:05.241462', 'endtime': '2019-08-31T16:31:06.865581'}]
         },
         "mark": "point",
         "encoding": {

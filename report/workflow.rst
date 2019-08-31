@@ -1,4 +1,4 @@
-This pipeline demonstrates using the `Trimmomatic`_ software to trim input FASTQs. The output includes the trimmed FASTQ and a plot of FASTQ quality scores before and after trimming. For simplicity this demo supports only single-end FASTQs, however since we use the `trimmomatric snakemake-wrapper`_ it would be fairly easy to adjust for paired.
+This pipeline demonstrates using the `Trimmomatic`_ software to trim input FASTQs. The output includes the trimmed FASTQ and a plot of FASTQ quality scores before and after trimming. For simplicity this demo supports only single-end FASTQs, however since we use the `trimmomatic snakemake-wrapper`_ it would be fairly easy to adjust for paired.
 
 Configuration options include:
 
@@ -13,7 +13,8 @@ Plotting options include:
  - Flier Color: {{ snakemake.config["plot"]["flier_color"] }}
  - Plot Color: {{ snakemake.config["plot"]["plot_color"] }}
 
+This is report generated from a Snakemake workflow. See `here`_ for details.
+
 .. _Trimmomatic: http://www.usadellab.org/cms/?page=trimmomatic
 .. _trimmomatic snakemake-wrapper: https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html
-
-This is report generated from a Snakemake workflow. See [here](https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html) for details.
+.. _here: https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html

@@ -202,6 +202,18 @@ or generate a report:
 $ docker run -v $PWD/data/report:/code/data/report vanessa/encode-demo-workflow --report /code/data/report/report.html
 ```
 
+or bind the entire present working directory to be used in the container:
+
+```bash
+$ docker run -v $PWD:/code vanessa/encode-demo-workflow
+``` 
+
+and for a report:
+
+```bash
+$ docker run -v $PWD:/code vanessa/encode-demo-workflow --report /code/docs/index.html
+``` 
+
 ## Development
 
 If you want to build a container that is used in the example above, there is 
