@@ -1,10 +1,11 @@
-name: Docker Image Deploy
+name: Docker Image Test Build
 
 on:
-  push:
+  pull_request:
     branches:
-      - master
-      
+      ignore:
+        - master
+
 jobs:
 
   build:
@@ -17,12 +18,3 @@ jobs:
     - name: Build the Docker image
       run: |
         docker build --file docker/Dockerfile -t quay.io/vanessa/encode-demo-workflow .
-        DOCKER_TAG=$(echo "${GITHUB_SHA}" | cut -c1-12)
-        docker tag quay.io/vanessa/encode-demo-workflow:latest quay.io/vanessa/encode-demo-workflow:${DOCKER_TAG}
-    - name: Deploy the Docker Image
-      env:
-        DEPLOY_LOGIN: ${{ secrets.DEPLOY_LOGIN }}
-        DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
-      run: |
-        docker login -u="${DEPLOY_LOGIN}" -p="${DEPLOY_SECRET}" quay.io
-        docker push quay.io/vanessa/encode-demo-workflow
