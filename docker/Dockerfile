@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     ghostscript \
     pkg-config \
     libboost-dev \
-    default-jre \
+    openjdk-8-jre-headless \
     apt-transport-https \
     imagemagick \
 && rm -rf /var/lib/apt/lists/*
