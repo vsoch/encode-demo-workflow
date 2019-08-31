@@ -1,0 +1,28 @@
+name: Docker Image Deploy
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+
+  build:
+ 
+    runs-on: ubuntu:18.04
+ 
+    steps:
+    - name: Checkout GitHub Repository
+      uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: |
+        docker build --file docker/Dockerfile -t quay.io/vanessa/encode-demo-workflow .
+        DOCKER_TAG=$(echo "${GITHUB_SHA}" | cut -c1-12)
+        docker tag quay.io/vanessa/encode-demo-workflow:latest quay.io/vanessa/encode-demo-workflow:${DOCKER_TAG}
+    - name: Deploy the Docker Image
+      env: # Or as an environment variable
+        DEPLOY_LOGIN: ${{ secrets.DEPLOY_LOGIN }}
+        DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+      run: |
+        docker login -u="${{ secrets.DEPLOY_LOGIN }}" -p="${{ secrets.DEPLOY_SECRET }}" quay.io
+        docker push quay.io/vanessa/encode-demo-workflow
