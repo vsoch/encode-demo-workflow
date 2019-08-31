@@ -6,7 +6,7 @@ rule trimmomatic:
     input:
         expand("data/reads/file{sample}.fastq.gz", sample=samples.index) # 1,2
     output:
-        "data/trimmed/{sample}.fastq.gz"
+        report("data/trimmed/{sample}.fastq.gz")
     log:
         "logs/trimmomatic/{sample}.log"
     params:

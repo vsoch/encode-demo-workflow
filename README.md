@@ -161,10 +161,11 @@ $ singularity run encode-demo-workflow_latest.sif
 
 The output files will be in data/trimmed/, assuming that you run the workflow
 from the repository with the local files bound. You can also generate a report!
-In the example below, we build into the docs folder to render it on GitHub Pages:
+In the example below, we render an "index.html" to render the report on the
+master branch via GitHUb pages:
 
 ```bash
-$ singularity run encode-demo-workflow_latest.sif --report docs/index.html
+$ singularity run encode-demo-workflow_latest.sif --report index.html
 ```
 
 And then clean up:
@@ -196,11 +197,6 @@ To bind output to the host:
 ```bash
 $ docker run -v $PWD/data/trimmed:/code/data/trimmed vanessa/encode-demo-workflow
 ```
-or generate a report:
-
-```bash
-$ docker run -v $PWD/data/report:/code/data/report vanessa/encode-demo-workflow --report /code/data/report/report.html
-```
 
 or bind the entire present working directory to be used in the container:
 
@@ -211,8 +207,11 @@ $ docker run -v $PWD:/code vanessa/encode-demo-workflow
 and for a report:
 
 ```bash
-$ docker run -v $PWD:/code vanessa/encode-demo-workflow --report /code/docs/index.html
+$ docker run -v $PWD:/code vanessa/encode-demo-workflow --report /code/index.html
 ``` 
+
+The report generated will use the root of the repository as the web root so you
+will want to generate it as index.html to render on GitHub pages.
 
 ## Development
 

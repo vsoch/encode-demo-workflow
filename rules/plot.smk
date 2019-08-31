@@ -5,7 +5,7 @@ rule plot:
         untrimmed="data/reads/file{sample}.fastq.gz",
         trimmed="data/trimmed/trimmed.file{sample}.fastq.gz"
     output:
-         "data/file{sample}_untrimmed_file{sample}_trimmed_quality_scores.png"
+        report("data/file{sample}_untrimmed_file{sample}_trimmed_quality_scores.png", category="Plot")
     params:
         flier_color=config["plot"]["flier_color"],
         plot_color=config["plot"]["plot_color"],

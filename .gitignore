@@ -1,3 +1,4 @@
+data/trimmed
 .snakemake
 logs
 *.sif

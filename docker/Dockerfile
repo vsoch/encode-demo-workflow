@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     libboost-dev \
     default-jre \
     apt-transport-https \
+    imagemagick \
 && rm -rf /var/lib/apt/lists/*
 
 RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.38.zip && \
@@ -31,12 +32,7 @@ RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmoma
     conda install biopython>=1.68 && \
     conda install pygraphviz && \
     conda install seaborn>=0.8.1 && \
-    conda install networkx
-
-RUN pip install snakemake && \
-    pip install jinja2 && \
-    pip install pygments && \
-    which snakemake && \
+    conda install -c bioconda -c conda-forge snakemake && \
     mkdir -p /code
 
 WORKDIR /code
