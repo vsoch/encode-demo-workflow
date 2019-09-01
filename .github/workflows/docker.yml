@@ -1,10 +1,6 @@
 name: Docker Image Test Build
 
-on:
-  pull_request:
-    branches:
-      ignore:
-        - master
+on: [pull_request]
 
 jobs:
 
