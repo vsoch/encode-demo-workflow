@@ -2,8 +2,7 @@ FROM continuumio/miniconda3
 
 # docker build -f docker/Dockerfile -t vanessa/encode-demo-workflow .
 
-# Update the repository sources list
-# Install base packages: git, python2/3, java
+LABEL maintainer vsochat@stanford.edu
 ENV DEBIAN_FRONTEND=noninteractive
 RUN mkdir -p /usr/share/man/man1mkdir -p /usr/share/man/man1 && \
     apt-get update && apt-get install -y \
